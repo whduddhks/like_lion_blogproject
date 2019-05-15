@@ -1,14 +1,20 @@
-<h1>Make Your Blog! </h1>
-<a href="{% url 'new' %}">새로운 글 작성하기</a>
-<h2>블로그 글 목록</h2>
-<br>
-{% for post in blogs %}
-<a href="{% url 'detail' post.id %}">
-    제목 : {{post.title}}
-</a>
-<br>
-작성자 : {{post.writer}}
-<hr>
-본문 : {{post.body}}
-<br><br>
-{% endfor %}
+{% extends 'base.html' %}
+
+{% block contents %}
+
+    <h1>Make Your Blog! </h1>
+    <a href="{% url 'new' %}">새로운 글 작성하기</a>
+    <h2>블로그 글 목록</h2>
+    <br>
+    {% for post in blogs %}
+    <a href="{% url 'detail' post.id %}">
+        제목 : {{post.title}}
+    </a>
+    <br>
+    작성자 : {{post.writer}}
+    <hr>
+    본문 : {{post.body}}
+    <br><br>
+    {% endfor %}
+
+{% endblock %}
