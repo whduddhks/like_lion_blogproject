@@ -1,0 +1,14 @@
+<h1>새 글 작성!</h1>
+
+<form action="{% url 'create' %}" method="POST">
+    {% csrf_token %}
+    title : <input type="text" name="title" placeholder="제목">
+    <br>
+    writer : <input type="text" name="writer" placeholder="작성자">
+    <br>
+    body
+    <br> 
+    <textarea name="content" cols="30" rows="10" placeholder="본문을 입력해주세요"></textarea>
+    <br>
+    <input type="submit">
+</form>

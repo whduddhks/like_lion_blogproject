@@ -1,0 +1,17 @@
+<h1>상세 페이지</h1>
+
+<p>
+    <h2>제목 : {{detail.title}}</h2>
+    <p>작성자 : {{detail.writer}}</p>
+    <p>
+        본문
+        <br>
+        {{detail.body}}
+    </p>
+</p>
+<br>
+<a href="{% url 'edit' detail.id%}">수정하기</a>
+<a href="{% url 'delete' detail.id %}">삭제하기</a>
+<hr>
+
+<a href="{% url 'home' %}"> home </a>
