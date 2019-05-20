@@ -1,9 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Blog
+from django.core.paginator import Paginator
 
 def home(request):
-    blogs = Blog.objects.all()
-    return render(request, 'home.html', {'blogs':blogs})
+    blog_list = Blog.objects.all().order_by('-id')
+    paginator = Paginator(blog_list, 5)
+    page = request.GET.get('page')
+    blogs = paginator.get_page(page)
+    return render(request, 'home.html', {'blogs':blogs, 'page_number':range(paginator.num_pages)})
 
 def detail(request,detail_id):
     detail = get_object_or_404(Blog, pk=detail_id)
