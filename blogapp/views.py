@@ -8,8 +8,10 @@ def home(request):
     paginator = Paginator(blog_list, 5)
     page = request.GET.get('page')
     blogs = paginator.get_page(page)
-    liked = Blog.objects.filter(user = request.user)
-    return render(request, 'home.html', {'blogs':blogs, 'liked':liked})
+    if request.user.is_authenticated:
+        liked = Blog.objects.filter(user = request.user)
+        return render(request, 'home.html', {'blogs':blogs, 'liked':liked})
+    return render(request, 'home.html', {'blogs':blogs})
 
 def detail(request,detail_id):
     detail = get_object_or_404(Blog, pk=detail_id)
