@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+    
     <h1>상세 페이지</h1>
-
+    <hr>
     <p>
         <h2>제목 : {{detail.title}}</h2>
         <p>작성자 : {{detail.writer}}</p>
@@ -13,8 +13,35 @@
             {{detail.body}}
         </p>
     </p>
-    <br>
-    <a href="{% url 'edit' detail.id%}">수정하기</a>
+    <hr>
+    <h4>이 글을 좋아하는 사람들</h4>
+    {% for user in detail.user.all %}
+        {{user}}
+    {% endfor %}
+    <hr>
+    <form action="{% url 'like' detail.id %}" method="get">
+        <input type="hidden" name="like" value="{{user}}">
+        <button type="submit">좋아요</button>
+    </form>
+    <a href="{% url 'like' detail.id %}">좋아요!</a>
+    <hr>
+    <h2>댓글달기</h2>
+    <form action="{% url 'writecomment' detail.id %}" method="POST">
+        {% csrf_token %}
+        작성자 : <input type="text" name="writer" placeholder="작성자">
+        <br>
+        내용 :  
+        <textarea name="content" id="" cols="100" rows="1" placeholder="댓글" ></textarea>
+        <br>
+        <input type="submit" value="쓰기">
+    </form>
+    <hr>
+    {% for comment in comments %}
+        {{comment.writer}} : {{comment.content}}
+        <br>
+    {% endfor %}
+    <hr>
+    <a href="{% url 'edit' detail.id %}">수정하기</a>
     <a href="{% url 'delete' detail.id %}">삭제하기</a>
     <hr>
 

@@ -2,24 +2,49 @@
 
 {% block content %}
 
-    <h1>Make Your Blog! </h1>
     {% if user.is_authenticated %}
-        <a href="{% url 'new' %}">새로운 글 작성하기</a>
-        <h2>블로그 글 목록</h2>
+        {% for liked_post in liked %}
+            <a href="{% url 'detail' liked_post.id %}">{{liked_post.title}}</a>
+        {% endfor %}
+        <br><br>
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">TITLE</th>
+                    <th scope="col">WRITER</th>
+                    <th scope="col">CONTENT</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in blogs %}
+                    <tr>
+                        <th scope="row">{{post.id}}</th>
+                        <td>{{post.title}}</td>
+                        <td>{{post.writer}}</td>
+                        <td><a href="{% url 'detail' post.id %}">{{post.summary}}...</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
         <br>
-        {% for post in blogs %}
-            <a href="{% url 'detail' post.id %}">
-                제목 : {{post.title}}
-            </a>
-            <br>
-                작성자 : {{post.writer}}
-            <hr>
-                본문 : {{post.body}}
-            <br><br>
-        {% endfor %}
-        {% for number in page_number%}
-            <a href='?page={{number}}'>{{number}}</a>
-        {% endfor %}
+        <div class="container" style="margin: 0 600px">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    {% if blogs.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{blogs.previous_page_number}}">이전 페이지로</a></li>
+                    {% endif %}
+                    <li class="page-item page-link" style="color: black;">{{blogs.number}} of {{blogs.paginator.num_pages}}</li>
+                    {% if blogs.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{blogs.next_page_number}}">다음 페이지로</a></li>
+                    {% endif %} 
+                </ul>
+            </nav>
+        </div>
+        <a href="{% url 'new' %}">
+            <button type="button" class="btn btn-primary btn-lg btn-block" style="width:60%; margin:0 auto;">글쓰기</button>
+        </a>
+        <br>
     {% else %}
         <h1>회원가입 또는 로그인을 해주세요~</h1>
     {% endif %}

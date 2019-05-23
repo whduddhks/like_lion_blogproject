@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Blog
+from .models import Blog, Comment
+from django.utils import timezone
 from django.core.paginator import Paginator
 
 def home(request):
@@ -7,11 +8,13 @@ def home(request):
     paginator = Paginator(blog_list, 5)
     page = request.GET.get('page')
     blogs = paginator.get_page(page)
-    return render(request, 'home.html', {'blogs':blogs, 'page_number':range(paginator.num_pages)})
+    liked = Blog.objects.filter(user = request.user)
+    return render(request, 'home.html', {'blogs':blogs, 'liked':liked})
 
 def detail(request,detail_id):
     detail = get_object_or_404(Blog, pk=detail_id)
-    return render(request, 'detail.html', {'detail':detail})
+    comments = Comment.objects.filter(point = detail_id)
+    return render(request, 'detail.html', {'detail':detail, 'comments':comments})
 
 def new(request):
     return render(request, 'new.html')
@@ -40,3 +43,20 @@ def update(request, update_blog_id):
     update_post.body = request.POST['content']
     update_post.save()
     return redirect('/blog/detail/' + str(update_blog_id))
+
+def writecomment(request, comment_id):
+    comment = Comment()
+    comment.writer = request.POST['writer']
+    comment.content = request.POST['content']
+    comment.point = get_object_or_404(Blog, pk=comment_id)
+    comment.save()
+    return redirect('/blog/detail/' + str(comment_id))
+
+def like(request, like_id):
+    user_like=get_object_or_404(Blog, pk=like_id)
+    if user_like.user.filter(username=request.user.username).exists():
+        user_like.user.remove(request.user)
+    else:
+        user_like.user.add(request.user)
+    user_like.save()
+    return redirect('/blog/detail/' + str(like_id))
